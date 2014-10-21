@@ -1,0 +1,19 @@
+{
+  "name": "hostadmin.js",
+  "version": "1.0.0",
+  "description": "lib to manage hosts file",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hostadmin",
+    "host"
+  ],
+  "devDependencies": {
+      "jison": "*",
+      "coffee-script": "*"
+  },
+  "author": "tgic",
+  "license": "MPL"
+}
