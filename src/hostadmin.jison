@@ -1,18 +1,5 @@
 %{
 
-    var group_id   = 0;
-    var groups     = [];
-    var root_group = { name : "Ungrouped", hosts : [] };
-    var cur_group  = root_group;
-
-    var hosts      = [];
-
-    var hide_below = false;
-
-    exports.hosts  = hosts;
-    exports.groups = groups;
-    exports.root_group = root_group;
-
 %}
 
 /* lexical grammar */
@@ -20,7 +7,7 @@
 
 %%
 
-"#===="             { if (group_id++ % 2 == 0) { return 'GROUP_START'; } else { return 'GROUP_END'; } }
+"#===="             { if (yy.group_id++ % 2 == 0) { return 'GROUP_START'; } else { return 'GROUP_END'; } }
 
 "#"+[ \t]*[Hh][Ii][Dd][Ee]_[Aa][Ll][Ll]_[Oo][Ff]_[Bb][Ee][Ll][Oo][Ww] { return 'HIDE_ALL_OF_BELOW';}
 
@@ -44,26 +31,26 @@
 
 hosts
     :
-    | hosts line { if(typeof($2) == 'object') { var hid = hosts.push($2) - 1; cur_group.hosts.push(hid); } }
+    | hosts line { if(typeof($2) == 'object') { var hid = yy.hosts.push($2) - 1; yy.cur_group.hosts.push(hid); } }
     | hosts group_start
     | hosts group_end
-    | hosts HIDE_ALL_OF_BELOW { hide_below = true; }
+    | hosts HIDE_ALL_OF_BELOW { yy.hide_below = true; }
     ;
 
 group_start
-    : GROUP_START { cur_group = { name : "", hosts : [] };}
-    | group_start WORD { cur_group.name += ' ' + $2; }
+    : GROUP_START { yy.cur_group = { name : "", hosts : [] };}
+    | group_start WORD { yy.cur_group.name += ' ' + $2; }
     | group_start LF
     ;
 
 group_end
     : GROUP_END { 
-                    var gid = groups.push(cur_group) - 1;
+                    var gid = yy.groups.push(yy.cur_group) - 1;
 
-                    cur_group.name = cur_group.name.replace(/^\s+|\s+$/g, '');
-                    if(!cur_group.name) { cur_group.name = "Group " + (gid + 1); } 
+                    yy.cur_group.name = yy.cur_group.name.replace(/^\s+|\s+$/g, '');
+                    if(!yy.cur_group.name) { yy.cur_group.name = "Group " + (gid + 1); } 
                     
-                    cur_group = root_group;
+                    yy.cur_group = yy.root_group;
 
                 }
     | group_end WORD
@@ -82,7 +69,7 @@ mapping_with_comment
     ;
 
 mapping
-    : IP WORD { $$ = { ip : $1.replace(/^\s+|\s+$/g, ''), host : [$2], comment : '', disabled : false, line_no : @$.first_line, hide : hide_below }; }
+    : IP WORD { $$ = { ip : $1.replace(/^\s+|\s+$/g, ''), host : [$2], comment : '', disabled : false, line_no : @$.first_line, hide : yy.hide_below }; }
     | mapping WORD { $1.host.push($2); $$ = $1; }
     | HASH mapping { $2.disabled = true; $$ = $2; }
     | mapping HIDE { $1.hide = true; $$ = $1; }

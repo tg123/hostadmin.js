@@ -16,8 +16,8 @@ run = (args, cb) ->
     proc =         spawn 'coffee', args
     proc.stderr.on 'data', (buffer) -> console.log buffer.toString()
     proc.on        'exit', (status) ->
-    process.exit(1) if status != 0
-        cb() if typeof cb is 'function'
+        process.exit(1) if status != 0
+            cb() if typeof cb is 'function'
 
 
 task 'build', 'Run full build', ->
