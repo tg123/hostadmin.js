@@ -4,15 +4,15 @@
   "description": "lib to manage hosts file",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cake test"
   },
   "keywords": [
-    "hostadmin",
-    "host"
+    "hostadmin", "host"
   ],
   "devDependencies": {
       "jison": "*",
-      "coffee-script": "*"
+      "coffee-script": "1.9+",
+      "mocha": "*"
   },
   "author": "tgic",
   "license": "MPL2"

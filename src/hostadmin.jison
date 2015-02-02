@@ -22,6 +22,7 @@
 [ \t]+               { ;}
 \n                   { return 'LF';} 
 [^ \t\n]+            { return 'WORD';}
+<<EOF>>              { return 'LF'; }
 
 /lex
 

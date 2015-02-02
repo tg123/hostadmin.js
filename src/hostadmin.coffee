@@ -1,6 +1,5 @@
 host_parser = require("./hosts_parser")
 
-
 class HostAdmin
 
     constructor: ->
