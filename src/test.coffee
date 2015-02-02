@@ -1,21 +1,40 @@
 
 fs = require('fs')
-hostadmin = require("./hostadmin")
+HostAdmin = require("./hostadmin").HostAdmin
 
 fs.readFile '/etc/hosts', 'utf8', (err,data) ->
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    d = hostadmin.parse_hostfile(data)
-    console.log(d)
-    #for i in d.hosts
+
+
+    ha = new HostAdmin
+
+
+    ha.parse_hostfile(data)
+
+    #console.log(ha.to_hostfile())
+    h = ha.hosts['localhost']
+    console.log(h)
+
+    h = ha.hosts['localhost'][0]
+
+    ha.host_toggle('localhost', h)
+
+    #console.log(ha.to_hostfile())
+
+
+    #console.log(ha)
+    #
+
+    #d = hostadmin.parse_hostfile(data)
+    #console.log(d)
+    #d = hostadmin.parse_hostfile(data)
+    #console.log(d)
+    #d = hostadmin.parse_hostfile(data)
+    #console.log(d)
+    #d = hostadmin.parse_hostfile(data)
+    #console.log(d)
+    #d = hostadmin.parse_hostfile(data)
+    #console.log(d)
+    ##for i in d.hosts
     #    console.log( i)
         #console.log(parser.yy.hosts[i])
 
