@@ -244,3 +244,32 @@ describe 'HostAdmin', ->
             127.0.0.1 domain2
             """
             assert.equal domain2.disabled, false
+
+    describe '# group_toggle', ->
+        it 'all enable test', ->
+            h = new HostAdmin
+
+            h.parse_hostfile """
+            #==== Project 1
+            127.0.0.1 localhost1
+            ##127.0.0.1 localhost2 #hide
+            ##127.0.0.1 localhost3
+            #====
+
+            127.0.0.1 localhost2
+            127.0.0.1 localhost3
+
+            #
+            #==== Project 2
+            127.0.0.1 localhost1
+            127.0.0.1 localhost2 #hide
+            127.0.0.1 localhost3
+            #====
+            """
+
+            project1 = h.groups[0]
+            project2 = h.groups[1]
+
+            assert.equal h.group_is_all_enabled(project1), false
+            assert.equal h.group_is_all_enabled(project2), true
+

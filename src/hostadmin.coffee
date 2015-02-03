@@ -22,6 +22,21 @@ class HostAdmin
             else
                 @line_disable(h)
 
+    group_is_all_enabled: (group) ->
+        for h in group.hosts
+            if h.disabled
+                return false
+        return true
+
+    group_toggle: (group) ->
+        all_enabled = @group_is_all_enabled(group)
+
+        if all_enabled
+            @line_disable(h) for h in group.hosts
+        else
+            @line_enable(h)  for h in group.hosts
+
+
     to_hostfile: ->
         @lines.join '\n'
 
