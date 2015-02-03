@@ -273,3 +273,71 @@ describe 'HostAdmin', ->
             assert.equal h.group_is_all_enabled(project1), false
             assert.equal h.group_is_all_enabled(project2), true
 
+        it 'toogle on and toggle off', ->
+            h = new HostAdmin
+
+            h.parse_hostfile """
+            #==== Project 1
+            127.0.0.1 localhost1
+            ##127.0.0.1 localhost2 #hide
+            ##127.0.0.1 localhost3
+            #====
+
+            127.0.0.1 localhost2
+            127.0.0.1 localhost3
+
+            #
+            #==== Project 2
+            127.0.0.1 localhost1
+            127.0.0.1 localhost2 #hide
+            127.0.0.1 localhost3
+            #====
+            """
+
+            project1 = h.groups[0]
+            project2 = h.groups[1]
+
+            h.group_toggle(project1)
+
+            assert.equal h.to_hostfile(), """
+            #==== Project 1
+            127.0.0.1 localhost1
+            127.0.0.1 localhost2 #hide
+            127.0.0.1 localhost3
+            #====
+
+            127.0.0.1 localhost2
+            127.0.0.1 localhost3
+
+            #
+            #==== Project 2
+            127.0.0.1 localhost1
+            127.0.0.1 localhost2 #hide
+            127.0.0.1 localhost3
+            #====
+            """
+
+            assert.equal h.group_is_all_enabled(project1), true
+
+            h.group_toggle(project2)
+
+            assert.equal h.to_hostfile(), """
+            #==== Project 1
+            127.0.0.1 localhost1
+            127.0.0.1 localhost2 #hide
+            127.0.0.1 localhost3
+            #====
+
+            127.0.0.1 localhost2
+            127.0.0.1 localhost3
+
+            #
+            #==== Project 2
+            #127.0.0.1 localhost1
+            #127.0.0.1 localhost2 #hide
+            #127.0.0.1 localhost3
+            #====
+            """
+
+            assert.equal h.group_is_all_enabled(project2), false
+

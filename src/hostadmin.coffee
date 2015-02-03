@@ -29,13 +29,10 @@ class HostAdmin
         return true
 
     group_toggle: (group) ->
-        all_enabled = @group_is_all_enabled(group)
-
-        if all_enabled
+        if @group_is_all_enabled(group)
             @line_disable(h) for h in group.hosts
         else
             @line_enable(h)  for h in group.hosts
-
 
     to_hostfile: ->
         @lines.join '\n'
