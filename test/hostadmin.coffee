@@ -47,6 +47,27 @@ describe 'HostAdmin', ->
                 {"ip":"127.0.0.1","host":["domain2"],"comment":"","disabled":false,"line_no":3,"hide":false}
             ]
 
+        it 'parse multi times', ->
+            h = new HostAdmin
+
+            [0..10].forEach ->
+                h.parse_hostfile """
+                127.0.0.1 domain
+                #127.0.0.1 domain
+
+                127.0.0.1 domain2
+                
+                """
+
+            assert.deepEqual h.hosts['domain'], [
+                {"ip":"127.0.0.1","host":["domain"],"comment":"","disabled":false,"line_no":0,"hide":false}
+                {"ip":"127.0.0.1","host":["domain"],"comment":"","disabled":true, "line_no":1,"hide":false}
+            ]
+
+            assert.deepEqual h.hosts['domain2'], [
+                {"ip":"127.0.0.1","host":["domain2"],"comment":"","disabled":false,"line_no":3,"hide":false}
+            ]
+
         it 'host ip v6', ->
             h = new HostAdmin
 
@@ -162,3 +183,64 @@ describe 'HostAdmin', ->
                 }
             ]
 
+    describe '#host_toggle', ->
+        it 'toggle on -> off', ->
+            h = new HostAdmin
+
+            h.parse_hostfile """
+            127.0.0.1 domain
+            #127.0.0.1 domain
+            127.0.0.1 domain2
+            """
+
+            domain = h.hosts['domain'][0]
+            domain2 = h.hosts['domain2'][0]
+
+            h.host_toggle('domain', domain)
+
+            assert.equal h.to_hostfile(), """
+            #127.0.0.1 domain
+            #127.0.0.1 domain
+            127.0.0.1 domain2
+            """
+            assert.equal domain.disabled, true
+
+            h.host_toggle('domain2', domain2)
+
+            assert.equal h.to_hostfile(), """
+            #127.0.0.1 domain
+            #127.0.0.1 domain
+            #127.0.0.1 domain2
+            """
+            assert.equal domain2.disabled, true
+
+        it 'toggle off -> on , exclusive', ->
+            h = new HostAdmin
+
+            h.parse_hostfile """
+            127.0.0.1 domain
+            #127.0.0.1 domain
+            #127.0.0.1 domain2
+            """
+
+            domain = h.hosts['domain'][1]
+            domain2 = h.hosts['domain2'][0]
+
+            h.host_toggle('domain', domain)
+
+            assert.equal h.to_hostfile(), """
+            #127.0.0.1 domain
+            127.0.0.1 domain
+            #127.0.0.1 domain2
+            """
+            assert.equal domain.disabled, false
+            assert.equal h.hosts['domain'][0].disabled, true
+
+            h.host_toggle('domain2', domain2)
+
+            assert.equal h.to_hostfile(), """
+            #127.0.0.1 domain
+            127.0.0.1 domain
+            127.0.0.1 domain2
+            """
+            assert.equal domain2.disabled, false
