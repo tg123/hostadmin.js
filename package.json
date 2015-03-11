@@ -2,16 +2,18 @@
   "name": "hostadmin.js",
   "version": "1.0.0",
   "description": "lib to manage hosts file",
-  "main": "index.js",
+  "private": true,
+  "main": "lib/hostadmin.js",
   "scripts": {
-    "test": "cake test"
+    "test": "./node_modules/coffee-script/bin/cake test",
+    "prepublish": "./node_modules/coffee-script/bin/cake build"
   },
   "keywords": [
     "hostadmin", "host"
   ],
   "devDependencies": {
       "jison": "*",
-      "coffee-script": "1.9+",
+      "coffee-script": ">=1.9",
       "mocha": "*"
   },
   "author": "tgic",
