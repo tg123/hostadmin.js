@@ -9,13 +9,14 @@
     "prepublish": "./node_modules/coffee-script/bin/cake build"
   },
   "keywords": [
-    "hostadmin", "host"
+    "hostadmin",
+    "host"
   ],
   "devDependencies": {
-      "jison": "*",
-      "coffee-script": ">=1.9",
-      "mocha": "*"
+    "jison": "*",
+    "coffee-script": ">=1.9",
+    "mocha": "*"
   },
   "author": "tgic",
-  "license": "MPL2"
+  "license": "MIT"
 }
